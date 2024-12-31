@@ -1,27 +1,36 @@
 list_of_words = []
 with open('valid-wordle-words.txt', 'r') as file:
-
     for line in file:
         for word in line.split():
             list_of_words.append(word)
 
-acceptable_indices = list(range(0, len(list_of_words)))
+# Take user input and filter the word list
+for _ in range(6):
+    word = input("Enter the word: ").strip()
+    output = input("Enter the colors (g for green, y for yellow, b for black): ").strip()
 
-# Take user input
-for i in range(0, 6):
-    word = str(input("Enter the word: "))
-    output = str(input("Enter the colors: "))
+    updated_list = []
 
-    for j in acceptable_indices:
-        for k in range(0, 5):
-            # Condition for green
-            if(output[k] == "g"):
-                if(list_of_words[j][k] != word[k]):
-                    acceptable_indices.remove(j)
+    for candidate in list_of_words:
+        valid = True  # Assume the candidate is valid unless proven otherwise
 
-            if (output[k] == "b"):
-                if(word[k] in list_of_words[j]):
-                    acceptable_indices.remove(j)
-    
-    for test in acceptable_indices:
-        print(list_of_words[test])
+        for k in range(5):
+            if output[k] == "g":
+                if candidate[k] != word[k]:  # Green means exact match at position k
+                    valid = False
+                    break
+            elif output[k] == "y":
+                if word[k] not in candidate or candidate[k] == word[k]:  # Yellow means present but not at position k
+                    valid = False
+                    break
+            elif output[k] == "b":
+                if word[k] in candidate:  # Black means not present in the word at all
+                    valid = False
+                    break
+
+        if valid:
+            updated_list.append(candidate)
+
+    list_of_words = updated_list  # Update the list for the next round of filtering
+    print(f"Updated list: {updated_list}")
+    print(f"Remaining words: {len(updated_list)}")
