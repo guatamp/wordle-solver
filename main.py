@@ -1,6 +1,11 @@
-list_of_words = ("maths", "worms", "ouija")
+list_of_words = []
+with open('valid-wordle-words.txt', 'r') as file:
+
+    for line in file:
+        for word in line.split():
+            list_of_words.append(word)
+
 acceptable_indices = list(range(0, len(list_of_words)))
-print(acceptable_indices)
 
 # Take user input
 for i in range(0, 6):
@@ -8,13 +13,15 @@ for i in range(0, 6):
     output = str(input("Enter the colors: "))
 
     for j in acceptable_indices:
-        print(list_of_words[j])
         for k in range(0, 5):
             # Condition for green
             if(output[k] == "g"):
                 if(list_of_words[j][k] != word[k]):
                     acceptable_indices.remove(j)
-                    print(acceptable_indices)
+
+            if (output[k] == "b"):
+                if(word[k] in list_of_words[j]):
+                    acceptable_indices.remove(j)
     
     for test in acceptable_indices:
         print(list_of_words[test])
